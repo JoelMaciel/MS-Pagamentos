@@ -4,6 +4,7 @@ import com.food.pagamentos.dto.PagamentoDTO;
 import com.food.pagamentos.exception.PagamentoNaoExisteException;
 import com.food.pagamentos.model.Pagamento;
 import com.food.pagamentos.repository.PagamentoRepository;
+import com.food.pagamentos.status.Status;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,13 @@ public class PagamentoService {
     public PagamentoDTO buscarPorId(Long id) {
         Pagamento pagamento = pagamentoRepository.findById(id)
                 .orElseThrow(() -> new PagamentoNaoExisteException(MSG_PAGAMENTO_NAO_EXISTE));
+        return modelMapper.map(pagamento, PagamentoDTO.class);
+    }
+
+    public PagamentoDTO criarPagamento(PagamentoDTO pagamentoDTO) {
+        Pagamento pagamento = modelMapper.map(pagamentoDTO, Pagamento.class);
+        pagamento.setStatus(Status.CRIADO);
+        pagamentoRepository.save(pagamento);
         return modelMapper.map(pagamento, PagamentoDTO.class);
     }
 
