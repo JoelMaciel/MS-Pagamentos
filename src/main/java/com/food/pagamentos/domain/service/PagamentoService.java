@@ -29,8 +29,9 @@ public class PagamentoService {
     }
 
     public PagamentoDTO buscarPorId(Long id) {
-        Pagamento pagamento = pagamentoRepository.findById(id)
-                .orElseThrow(() -> new PagamentoNaoExisteException(MSG_PAGAMENTO_NAO_EXISTE));
+        Pagamento pagamento = buscarOuFalhar(id);
+        PagamentoDTO pagamentoDTO = modelMapper.map(pagamento, PagamentoDTO.class);
+        pagamentoDTO.setItens(pedidoClient.obterItensDoPedido(pagamento.getPedidoId()).getItens());
         return modelMapper.map(pagamento, PagamentoDTO.class);
     }
 
