@@ -23,7 +23,7 @@ spring:
     host: localhost
     port: 5672
     username: ${USER_NAME}
-    password: ${PASSWORD}
+    password: ${PASSWORD_RABBITMQ}
 
 eureka:
   client:
@@ -37,11 +37,6 @@ resilience4j:
         slidingWindowSize: 3
         minimumNumberOfCalls: 2
         waitDurationInOpenState: 50s
-
-
-
-
-
 
 logging:
   level:
