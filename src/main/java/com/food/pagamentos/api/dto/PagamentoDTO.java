@@ -1,6 +1,6 @@
-package com.food.pagamentos.dto;
+package com.food.pagamentos.api.dto;
 
-import com.food.pagamentos.status.Status;
+import com.food.pagamentos.domain.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,6 +1,6 @@
-package com.food.pagamentos.model;
+package com.food.pagamentos.domain.model;
 
-import com.food.pagamentos.status.Status;
+import com.food.pagamentos.domain.enums.Status;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
