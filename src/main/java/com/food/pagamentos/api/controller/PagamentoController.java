@@ -1,7 +1,7 @@
-package com.food.pagamentos.controller;
+package com.food.pagamentos.api.controller;
 
-import com.food.pagamentos.dto.PagamentoDTO;
-import com.food.pagamentos.service.PagamentoService;
+import com.food.pagamentos.api.dto.PagamentoDTO;
+import com.food.pagamentos.domain.service.PagamentoService;
 import com.sun.istack.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,5 +47,10 @@ public class PagamentoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable @NotNull Long id) {
         pagamentoService.excluir(id);
+    }
+
+    @PatchMapping("/{id}/confirmar")
+    public void confirmarPagamento(@PathVariable @NotNull Long id) {
+        pagamentoService.confirmarPagamento(id);
     }
 }
