@@ -3,6 +3,7 @@ package com.food.pagamentos.api.controller;
 import com.food.pagamentos.api.dto.PagamentoDTO;
 import com.food.pagamentos.domain.service.PagamentoService;
 import com.sun.istack.NotNull;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,7 +51,11 @@ public class PagamentoController {
     }
 
     @PatchMapping("/{id}/confirmar")
+    @CircuitBreaker(name = "atualizarPedido", fallbackMethod = "pagamentoAutorizadoComIntegracaoPendente")
     public void confirmarPagamento(@PathVariable @NotNull Long id) {
         pagamentoService.confirmarPagamento(id);
+    }
+    public void pagamentoAutorizadoComIntegracaoPendente(Long id , Exception e) {
+        pagamentoService.alteraStatus(id);
     }
 }

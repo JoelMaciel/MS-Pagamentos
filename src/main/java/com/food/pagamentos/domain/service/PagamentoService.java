@@ -8,6 +8,7 @@ import com.food.pagamentos.domain.repository.PagamentoRepository;
 import com.food.pagamentos.domain.enums.Status;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cloud.client.loadbalancer.CompletionContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -66,4 +67,9 @@ public class PagamentoService {
                 .orElseThrow(() -> new PagamentoNaoExisteException(MSG_PAGAMENTO_NAO_EXISTE));
     }
 
+    public void alteraStatus(Long id) {
+        Pagamento pagamento = buscarOuFalhar(id);
+        pagamento.setStatus(Status.CONFIRMADO_SEM_INTEGRACAO);
+        pagamentoRepository.save(pagamento);
+    }
 }
