@@ -2,13 +2,13 @@ package com.food.pagamentos.domain.service;
 
 import com.food.pagamentos.api.dto.PagamentoDTO;
 import com.food.pagamentos.api.http.PedidoClient;
+import com.food.pagamentos.domain.enums.Status;
 import com.food.pagamentos.domain.exception.PagamentoNaoExisteException;
 import com.food.pagamentos.domain.model.Pagamento;
 import com.food.pagamentos.domain.repository.PagamentoRepository;
-import com.food.pagamentos.domain.enums.Status;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.cloud.client.loadbalancer.CompletionContext;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,6 @@ public class PagamentoService {
     public static final String MSG_PAGAMENTO_NAO_EXISTE = "Não existe um pagamento com esse Id";
     private final PagamentoRepository pagamentoRepository;
     private final ModelMapper modelMapper;
-
     private final PedidoClient pedidoClient;
 
     public Page<PagamentoDTO> buscarTodos(Pageable pageable) {
@@ -35,10 +34,11 @@ public class PagamentoService {
         return modelMapper.map(pagamento, PagamentoDTO.class);
     }
 
-    public PagamentoDTO criarPagamento(PagamentoDTO pagamentoDTO) {
-        Pagamento pagamento = modelMapper.map(pagamentoDTO, Pagamento.class);
+    public PagamentoDTO criarPagamento(PagamentoDTO dto) {
+        Pagamento pagamento = modelMapper.map(dto, Pagamento.class);
         pagamento.setStatus(Status.CRIADO);
         pagamentoRepository.save(pagamento);
+
         return modelMapper.map(pagamento, PagamentoDTO.class);
     }
 
