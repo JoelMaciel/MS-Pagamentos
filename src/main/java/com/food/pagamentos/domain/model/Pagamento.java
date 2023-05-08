@@ -54,4 +54,8 @@ public class Pagamento {
 
     @NotNull
     private Long formaDePagamentoId;
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 }

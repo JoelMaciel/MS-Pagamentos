@@ -4,7 +4,8 @@ import com.food.pagamentos.api.dto.PagamentoDTO;
 import com.food.pagamentos.domain.service.PagamentoService;
 import com.sun.istack.NotNull;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -16,11 +17,13 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/pagamentos")
 public class PagamentoController {
 
-    private final PagamentoService pagamentoService;
+    @Autowired
+    private  PagamentoService pagamentoService;
+    @Autowired
+    private  RabbitTemplate rabbitTemplate;
 
     @GetMapping
     public Page<PagamentoDTO> listarTodos(@PageableDefault(size = 10) Pageable pageable) {
@@ -35,8 +38,11 @@ public class PagamentoController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PagamentoDTO cadastrar(@RequestBody @Valid PagamentoDTO pagamentoDTO, UriComponentsBuilder uriBuilder) {
-        URI endereco = uriBuilder.path("/pagamentos/{id}").buildAndExpand(pagamentoDTO.getId()).toUri();
-        return pagamentoService.criarPagamento(pagamentoDTO);
+        PagamentoDTO pagamento = pagamentoService.criarPagamento(pagamentoDTO);
+        URI endereco = uriBuilder.path("/pagamentos/{id}").buildAndExpand(pagamento.getId()).toUri();
+
+        rabbitTemplate.convertAndSend("pagamento.conluido", pagamento);
+        return pagamento;
     }
 
     @PutMapping("/{id}")
