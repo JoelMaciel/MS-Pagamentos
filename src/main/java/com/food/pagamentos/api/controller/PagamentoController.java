@@ -41,7 +41,7 @@ public class PagamentoController {
         PagamentoDTO pagamento = pagamentoService.criarPagamento(pagamentoDTO);
         URI endereco = uriBuilder.path("/pagamentos/{id}").buildAndExpand(pagamento.getId()).toUri();
 
-        rabbitTemplate.convertAndSend("pagamento.conluido", pagamento);
+        rabbitTemplate.convertAndSend("pagamento.ex", "", pagamento);
         return pagamento;
     }
 
